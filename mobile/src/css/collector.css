@@ -1,0 +1,176 @@
+/* ==========================================================================
+   Kabadiwala Connect — Collector Lite & ML Screens CSS
+   ========================================================================== */
+
+.collector-viewfinder-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #020617;
+  border: 2px dashed #334155;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-md);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6);
+}
+
+.collector-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.viewfinder-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.4);
+  pointer-events: none;
+}
+
+.viewfinder-reticle {
+  width: 140px;
+  height: 140px;
+  border: 2px solid rgba(16, 185, 129, 0.6);
+  border-radius: 16px;
+  position: relative;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+.viewfinder-reticle::before,
+.viewfinder-reticle::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: #10b981;
+}
+
+.viewfinder-scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #10b981, transparent);
+  box-shadow: 0 0 10px #10b981;
+  animation: scanGrid 2s ease-in-out infinite;
+}
+
+/* ML Prediction Result Box */
+.ml-result-card {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  margin-bottom: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--shadow-md);
+}
+
+.ml-result-card.confident {
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
+}
+
+.ml-result-card.low-confidence {
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.ml-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ml-category-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confidence-bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.confidence-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.confidence-progress-bg {
+  height: 8px;
+  background: #0f172a;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.confidence-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #38bdf8);
+  border-radius: var(--radius-full);
+  transition: width 0.5s ease-out;
+}
+
+.confidence-progress-fill.warning {
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+}
+
+/* Material Info & Safety Guide */
+.material-info-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.material-fact-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.material-fact-row:last-child {
+  border-bottom: none;
+}
+
+.material-fact-label {
+  color: var(--text-muted);
+}
+
+.material-fact-value {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.material-safety-note {
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 3px solid #ef4444;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  color: #fca5a5;
+  margin-top: 6px;
+}
