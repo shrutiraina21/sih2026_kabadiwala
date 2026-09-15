@@ -5,6 +5,7 @@
 
 import { classifyScrapImage, ML_CONFIG } from '../ml-classifier.js';
 import { CANONICAL_CATEGORIES, getCategoryMeta, showToast } from '../utils.js';
+import { voiceManager } from '../voice-manager.js';
 
 export function renderCollectorLiteView(container, navigateTo) {
   let currentPrediction = null;
@@ -19,9 +20,14 @@ export function renderCollectorLiteView(container, navigateTo) {
           <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main);">Collector Lite</h2>
           <p style="font-size: 0.8rem; color: var(--text-secondary);">On-device ML material detection & safety guide</p>
         </div>
-        <button class="btn btn-sm btn-outline" id="switchToDealerTopBtn" style="color: #34d399; border-color: rgba(52, 211, 153, 0.3);">
-          Dealer App ➔
-        </button>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-sm btn-outline" id="replayVoiceBtn" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);" title="Replay Instruction">
+            🔊
+          </button>
+          <button class="btn btn-sm btn-outline" id="switchToDealerTopBtn" style="color: #34d399; border-color: rgba(52, 211, 153, 0.3);">
+            Dealer App ➔
+          </button>
+        </div>
       </div>
 
       <!-- ML Notice Pill -->
@@ -106,12 +112,27 @@ export function renderCollectorLiteView(container, navigateTo) {
   const overlay = container.querySelector('#viewfinderOverlay');
   const mlContainer = container.querySelector('#mlResultContainer');
   const topSwitchBtn = container.querySelector('#switchToDealerTopBtn');
+  const replayVoiceBtn = container.querySelector('#replayVoiceBtn');
+
+  // Trigger welcome voice on load
+  // Note: Browsers may block this without prior interaction. Replay button serves as a fallback.
+  setTimeout(() => {
+    voiceManager.playFixedAudio('welcome');
+  }, 300);
+
+  replayVoiceBtn?.addEventListener('click', () => {
+    voiceManager.playFixedAudio('welcome');
+  });
 
   topSwitchBtn?.addEventListener('click', () => {
+    voiceManager.stop();
     window.setAppMode('dealer');
   });
 
-  snapBtn.addEventListener('click', () => cameraInput.click());
+  snapBtn.addEventListener('click', () => {
+    voiceManager.playFixedAudio('take_clear_photo');
+    cameraInput.click();
+  });
   pickBtn.addEventListener('click', () => galleryInput.click());
 
   cameraInput.addEventListener('change', handleImageSelection);
@@ -261,7 +282,20 @@ export function renderCollectorLiteView(container, navigateTo) {
             <span class="badge badge-info">${info.indicativeRate}</span>
           </div>
 
-          <div class="material-fact-row">
+          <!-- Pending Dealer Offers Section -->
+          <div class="card" style="margin-top: 10px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px;">
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">
+              Dealer Offers
+            </div>
+            <button class="btn btn-sm btn-primary" id="listenOffersBtn" style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 6px;">
+              🔊 Listen to Price & Offers
+            </button>
+            <div style="font-size: 0.7rem; color: #64748b; margin-top: 6px; text-align: center;">
+              *UI for dynamic dealer offers will be placed here*
+            </div>
+          </div>
+
+          <div class="material-fact-row" style="margin-top: 12px;">
             <span class="material-fact-label">Recyclability</span>
             <span class="material-fact-value">${info.recyclability}</span>
           </div>
@@ -278,18 +312,40 @@ export function renderCollectorLiteView(container, navigateTo) {
       ` : ''}
     `;
 
+    // Trigger voice instruction for category selection if confident
+    if (pred.isConfident) {
+      voiceManager.playFixedAudio('confirm_category');
+    } else {
+      voiceManager.playFixedAudio('select_category');
+    }
+
     // Handlers for confirm / correct
     mlContainer.querySelector('#confirmMlBtn')?.addEventListener('click', () => {
       confirmedCategory = pred.category;
       showToast(`Confirmed category: ${confirmedCategory}`, 'success');
       highlightSelectedCategory(confirmedCategory);
+      voiceManager.playFixedAudio('category_confirmed');
     });
 
     mlContainer.querySelector('#correctMlBtn')?.addEventListener('click', () => {
       showToast('Please select the correct category from the grid below', 'info');
+      voiceManager.playFixedAudio('select_category');
       document.getElementById('manualPickerCard')?.scrollIntoView({ behavior: 'smooth' });
     });
+
+    // Listen Offers Button
+    mlContainer.querySelector('#listenOffersBtn')?.addEventListener('click', () => {
+      if (!confirmedCategory) {
+        showToast('Please confirm a category first', 'warning');
+        return;
+      }
+      const catMeta = getCategoryMeta(confirmedCategory);
+      // NOTE: Pass actual dealer offers array here once implemented by teammate
+      voiceManager.speakDealerOffers(catMeta.name, catMeta.baseRate, []);
+    });
   }
+
+
 
   function highlightSelectedCategory(catId) {
     container.querySelectorAll('#collectorCatGrid .category-option').forEach(opt => {
@@ -308,6 +364,7 @@ export function renderCollectorLiteView(container, navigateTo) {
       confirmedCategory = cat;
       highlightSelectedCategory(cat);
       showToast(`Selected category: ${cat}`, 'info');
+      voiceManager.playFixedAudio('category_confirmed');
 
       // Update material guide card
       const info = ML_CONFIG.MATERIAL_INFO[cat];
