@@ -24,9 +24,6 @@ export function renderCollectorLiteView(container, navigateTo) {
           <button class="btn btn-sm btn-outline" id="replayVoiceBtn" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);" title="Replay Instruction">
             🔊
           </button>
-          <button class="btn btn-sm btn-outline" id="switchToDealerTopBtn" style="color: #34d399; border-color: rgba(52, 211, 153, 0.3);">
-            Dealer App ➔
-          </button>
         </div>
       </div>
 
@@ -111,7 +108,6 @@ export function renderCollectorLiteView(container, navigateTo) {
   const previewImg = container.querySelector('#collectorPhotoPreview');
   const overlay = container.querySelector('#viewfinderOverlay');
   const mlContainer = container.querySelector('#mlResultContainer');
-  const topSwitchBtn = container.querySelector('#switchToDealerTopBtn');
   const replayVoiceBtn = container.querySelector('#replayVoiceBtn');
 
   // Trigger welcome voice on load
@@ -122,11 +118,6 @@ export function renderCollectorLiteView(container, navigateTo) {
 
   replayVoiceBtn?.addEventListener('click', () => {
     voiceManager.playFixedAudio('welcome');
-  });
-
-  topSwitchBtn?.addEventListener('click', () => {
-    voiceManager.stop();
-    window.setAppMode('dealer');
   });
 
   snapBtn.addEventListener('click', () => {
