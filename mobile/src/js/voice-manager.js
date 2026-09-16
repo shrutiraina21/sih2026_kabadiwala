@@ -14,15 +14,17 @@ class VoiceManager {
     this.baseAudioPath = '/audio/hi/';
     
     // Phrases mapping for TTS fallback when audio files are missing
+    // Using pure Devanagari so the native Hindi TTS (female voice) doesn't switch mid-sentence.
+    // Removed problematic ending auxiliary verbs to completely bypass the TTS mispronunciation bug.
     this.phrases = {
       welcome: 'नमस्ते।',
       take_clear_photo: 'कबाड़ की साफ़ फोटो लें।',
       select_category: 'कृपया कबाड़ की श्रेणी चुनें।',
-      confirm_category: 'क्या यह सही श्रेणी है?',
-      category_confirmed: 'आपने यह श्रेणी चुनी है।',
-      price_available: 'इस कबाड़ की कीमत है।',
+      confirm_category: 'क्या यह सही श्रेणी हैं?',
+      category_confirmed: 'आपने यह श्रेणी चुनी।',
+      price_available: 'इस कबाड़ की कीमत,',
       dealer_offers: 'डीलरों की कीमतें सुनने के लिए बटन दबाएँ।',
-      no_offers: 'अभी किसी डीलर की कीमत उपलब्ध नहीं है।',
+      no_offers: 'अभी किसी डीलर की कीमत उपलब्ध नहीं।',
       error_retry: 'कृपया फिर से कोशिश करें।'
     };
 
@@ -35,8 +37,11 @@ class VoiceManager {
     const loadVoices = () => {
       const voices = this.synth.getVoices();
       if (voices.length > 0) {
-        // Look for Hindi voices
-        this.hindiVoice = voices.find(v => v.lang.startsWith('hi') || v.name.toLowerCase().includes('hindi'));
+        // Look for Hindi voices. Prefer Google's voice if available (better pronunciation).
+        const googleHindi = voices.find(v => (v.lang.startsWith('hi') || v.name.toLowerCase().includes('hindi')) && v.name.toLowerCase().includes('google'));
+        const anyHindi = voices.find(v => v.lang.startsWith('hi') || v.name.toLowerCase().includes('hindi'));
+        
+        this.hindiVoice = googleHindi || anyHindi;
         this.isTtsAvailable = !!this.hindiVoice;
         this.voicesLoaded = true;
       }
@@ -64,12 +69,20 @@ class VoiceManager {
   playFixedAudio(key) {
     this.stop();
     
+    // Set this to false ONLY when you have added the actual .mp3 files to the public/audio/hi folder.
+    // While it is true, it bypasses the MP3 check to prevent browsers from blocking the async TTS fallback.
+    const FORCE_TTS = true; 
+    
+    if (FORCE_TTS) {
+      if (this.phrases[key]) this.speakTTS(this.phrases[key]);
+      return;
+    }
+
     const src = `${this.baseAudioPath}${key}.mp3`;
     this.audioElement.src = src;
     
     this.audioElement.play().catch(err => {
       console.warn(`Could not play fixed audio for ${key} (file might be missing). Falling back to TTS.`, err);
-      // Fallback to TTS if the MP3 is missing or autoplay blocked
       if (this.phrases[key]) {
         this.speakTTS(this.phrases[key]);
       }
