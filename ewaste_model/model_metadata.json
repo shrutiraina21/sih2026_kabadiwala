@@ -1,0 +1,45 @@
+{
+  "model_name": "E-Waste YOLOv8n Object Detector",
+  "task": "detect",
+  "architecture": "YOLOv8n",
+  "framework": "Ultralytics YOLOv8",
+  "num_classes": 21,
+  "input_resolution": [416, 416],
+  "input_channels": 3,
+  "color_format": "RGB",
+  "normalization": {
+    "scale": 0.00392156862,
+    "description": "Divide pixel values by 255.0 to scale to [0.0, 1.0]"
+  },
+  "metrics": {
+    "test_mAP50": 0.9122,
+    "test_mAP50_95": 0.7873,
+    "precision": 0.8345,
+    "recall": 0.8696,
+    "f1_score": 0.8517,
+    "inference_speed_ms": 4.2
+  },
+  "classes": {
+    "0": "Mobile-Phone",
+    "1": "AC-Adapter",
+    "2": "Game-Controller",
+    "3": "Earphones",
+    "4": "Handheld-Fan",
+    "5": "Flashlight",
+    "6": "Hot-Glue-Gun",
+    "7": "Headphones",
+    "8": "Keyboard",
+    "9": "Microphone",
+    "10": "Router",
+    "11": "Computer-Mouse",
+    "12": "Power-Bank",
+    "13": "Remote-Control",
+    "14": "Tablet",
+    "15": "Smartwatch",
+    "16": "Soldering-Iron",
+    "17": "Speaker",
+    "18": "E-Cigarette",
+    "19": "Webcam",
+    "20": "USB-Cable"
+  }
+}
