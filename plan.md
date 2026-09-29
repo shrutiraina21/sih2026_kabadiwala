@@ -263,6 +263,7 @@ function letterboxResize(canvas, targetSize = 224) {
 | 2026-09-17 | Export both models to TFLite/LiteRT | Mobile deployment requirement |
 | 2026-09-17 | **PWA adaptation**: onnxruntime-web YOLO + TF.js TFLite | Avoid TF.js converter protobuf hell; run ONNX directly |
 | 2026-09-17 | **Lazy-load YOLO** | Keep initial bundle <15 MB; load YOLO only for Collector |
+| 2026-09-29 | **Deploy Custom E-Waste YOLOv8n (12.1MB)** | Replaced temporary COCO YOLOv8m (103MB) with custom-trained 21-class detector (`test_mAP50: 0.9122`, 416x416). Omitted Earphones class due to low validation metrics. Removed ~260MB of obsolete COCO weights. |
 
 ---
 

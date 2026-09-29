@@ -110,7 +110,10 @@ export async function detectAndClassify(imageElementOrFile) {
       }));
 
   const canvas = createCanvasFromImage(img);
-  const boxes = await detectObjects(canvas);
+  const rawBoxes = await detectObjects(canvas);
+  const boxes = (rawBoxes || []).filter(
+    (b) => b && b.className && b.className.toLowerCase() !== 'earphones' && b.classId !== 3
+  );
 
   if (!boxes || boxes.length === 0) {
     const fullResult = await classifyScrapImage(canvas);

@@ -1,5 +1,5 @@
-const CACHE_NAME = 'kabadiwala-ml-v7';
-const MODEL_CACHE_NAME = 'kabadiwala-model-v7';
+const CACHE_NAME = 'kabadiwala-ml-v8';
+const MODEL_CACHE_NAME = 'kabadiwala-model-v8';
 
 const STATIC_ASSETS = [
   '/',
@@ -12,7 +12,9 @@ const MODEL_ASSETS = [
   '/models/ewaste_model/ewaste_model_dynamic.tflite',
   '/models/ewaste_model/ewaste_model_float16.tflite',
   '/models/ewaste_model/labels.json',
-  '/models/ewaste_model/category_map.json'
+  '/models/ewaste_model/category_map.json',
+  '/models/yolo/ewaste_yolov8n.onnx',
+  '/models/yolo/labels.json'
 ];
 
 const ALL_ASSETS = [...STATIC_ASSETS, ...MODEL_ASSETS];
